@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>NYC Recycling 2016&ndash;2019</title>
+	<link href="https://fonts.googleapis.com/css2?family=Sen:wght@400;700;800&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+	<script src="https://d3js.org/d3.v5.min.js"></script>
+	<script src="https://unpkg.com/intersection-observer"></script>
+	<script src="https://unpkg.com/scrollama"></script>
+</head>
+<style type="text/css">
+	body, html {
+		top:0;
+		left:0;
+		margin:0;
+		font-family:'Roboto', sans-serif;
+	}
+	nav	{
+		background-color:white;
+		position:fixed;
+		width:100%;
+		display:flex;
+		justify-content: center;
+		align-items:center;
+		border-bottom:0.05em solid black;
+		z-index:100;
+	}
+	.title {
+		height:50vh;
+		color:white;
+		background-color:black;
+/*		background-image:url('https://i.pinimg.com/originals/7f/43/1c/7f431c9e6991b1a83d79e359dc09c99d.gif');*/
+		background-repeat: no-repeat;
+		background-attachment: fixed;
+		background-position: left top;
+		background-size: auto 100%;
+	}
+	.title h1 {
+		font-size:5em;
+	}
+	.title h2 {
+		font-size:1em;
+		font-weight:400;
+	}
+	.header {
+		text-align:center;
+		display:flex;
+		justify-content:center;
+		align-items:center;
+		border:0.5em solid black;
+		padding:5% 0%;
+		animation: fadeIn 0.5s ease-in-out;
+	}
+	.header h1{
+		font-family:'Roboto', sans-serif;
+		font-weight:800;
+		margin:0;
+	}
+	.header h2 {
+		margin:0;
+	}
+	.sticky {
+		float:right;
+		top:25%;
+		position:sticky;
+		width:50%;
+		display:inline-flex;
+					background-color:white;
+	}
+	.leftside{
+		background-color:black;
+		color:white;
+		width: 30%;
+    	padding: 5% 10% 5% 5%;
+	}
+	.progressive{
+		width:100%;
+		display:block;
+		margin-bottom:100%!important;
+	}
+	.end {
+		margin-bottom:5%!important;
+	}
+	#counter {
+		width:100%;
+		font-size:10em;
+		text-align:center;
+		margin:0;
+		padding:0%;
+		line-height:1em;
+		font-weight: 800;
+    	letter-spacing: -0.05em;
+	}
+	#counter h2{
+		text-align:center;
+	}
+	.text {
+		margin:5%;
+		line-height:2em;
+		opacity:0;
+		margin-top:10%;
+		transition:0.5s ease-in-out;
+	}
+	.text h1 {
+		font-size:4em;
+		letter-spacing:-0.05em;
+		line-height:1em;
+		font-weight:900;
+		width:60%;
+	}
+	.text h2 {
+		font-weight:400;
+		font-size:1em;
+		font-style:italic;
+	}
+	.sticky h1 {
+		width:100%;
+		font-size:3em;
+
+	}
+	.sticky h2 {
+		font-size:0.8em;
+		text-transform:uppercase;
+		letter-spacing:0.1em;
+	}
+	.center_aligner {
+		overflow:none;
+		width:100%;
+		display:flex;
+		align-items:center;
+		justify-content:center;
+		margin:2% 0%;
+	}
+	iframe {
+		border:0em solid black;
+		width:900px;
+		height:1800px;
+	}
+	.tableauPlaceholder{
+		width:50%;
+		z-index:0;
+	}
+	img{
+		text-align:center;
+		margin:0%;
+		display:inline-block;
+		border:0em solid black;
+	}
+	.caption {
+		font-size:0.8em;
+		color:#666666;
+	}
+	.small {
+		width:30%;
+	}
+	.large {
+		width:100%;
+		display:block;
+	}
+	@keyframes fadeIn {
+		0%{
+			opacity:0;
+		}
+		100%{
+			opacity:1;
+		}
+	}
+	@media screen and (max-width:767px){
+		.sticky {
+	/*		bottom:0;*/
+			width:50%;
+			float:none;
+			margin:auto;
+			display:flex;
+			line-height:2em;
+		}
+		.sticky h1 {
+			font-size:2em;
+			line-height:2em;
+		}
+		.sticky h2 {
+			font-size:0.5em;
+		}
+		#counter {
+			font-size:5em;
+		}
+		.leftside {
+			width: 85%;
+    		padding: 5% 10% 5% 5%;
+		}
+		.small {
+			width:80%;
+		}
+		.title {
+			height:80vh;
+		}
+		.text h1 {
+			font-size:2.5em;
+			width:80%;
+		}
+		.text {
+			margin:10% 5%;
+		}
+		iframe {
+			height:300px;
+		}
+
+	}
+</style>
+<body>
+
+<!-- nav -->
+<nav>
+	<h3>NYC Recycling Program Capture Rates (2016-2019)</h3>
+</nav>
+
+<!-- text -->
+<div class='header title step'>
+	<div class='aligner'>
+		<h1>NYC Recycling<br>
+		How Are We Doing?</h1>
+			
+	</div>
+</div>
+
+
+<div class='text'>
+	<h2>Rosie Cutler</h2>	
+	<b>NYC Recycling Program History</b><br>
+	In 1984 there was a garbage crisis in New York City. Many local and regional landfills were near capacity or already closed, and there was resistance to opening new ones. Mayor Koch proposed building five giant new incinerators in the city to handle the crisis. There was a public outcry over the plan and a battle ensued to stop it. Finally, in 1989 NYC passed Local Law 19, the NYC Recycling Law, which initiated the first mandatory recycling program in NYC. Thus began the program that has endured to this day, often with mixed success due to budget cuts, rule changes, and periodic suspensions.<sup>1</sup> 
+This visualization looks at the NYC recycling program’s success rate in more recent times, from 2016 to 2019, by looking at capture rates of recyclable materials.<br><br>
+
+<b>Definitions</b><br>
+	<b>Capture Rate:</b>
+The percentage of a recyclable material that is put out for recycling. In other words, it's the weight of a particular material collected for recycling divided by the weight of all that material in the waste stream including its recycling component (e.g., the paper in your recycling bag divided by the paper in your trash bag and your recycling bag) expressed as a ratio (%). Weight is in tons.<br>
+
+  
+<b>Diversion Rate:</b>
+total recycling / total waste <br>
+
+<b>MGP:</b>
+metal, glass, plastic, and beverage cartons<br>
+
+  
+</div>
+
+<div class='text'>
+	<h1>How do the boroughs compare?</h1>
+	
+</div>
+
+
+<!-- image 1 -->
+<div class='center_aligner'>
+	<!-- change line 120 if you want to change the size of the image -->
+	<img class='small' src="images/image2C.jpg"> 	
+</div>
+<!-- caption for image 1 -->
+<div class='center_aligner'>
+	<div class='caption'>     </div>	
+</div>
+
+
+<!-- tableau public -->
+<div class='center_aligner'>
+	<!-- insert tableau public embed link below this line -->
+	<div class='tableauPlaceholder' id='viz1607103468203' style='position: relative'><noscript><a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;NY&#47;NYCRecyclingData2016&ndash;2019&#47;DashboardD&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='NYCRecyclingData2016-2019&#47;DashboardD' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;NY&#47;NYCRecyclingData2016-2019&#47;DashboardD&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1607103468203');                    var vizElement = divElement.getElementsByTagName('object')[0];                    if ( divElement.offsetWidth > 800 ) { vizElement.style.width='1000px';vizElement.style.height='1627px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.width='1000px';vizElement.style.height='1627px';} else { vizElement.style.width='100%';vizElement.style.height='300px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
+</div>
+
+
+<div class='text'>
+	<h1>How does month influence capture rates?</h1>
+	Small multiples show a dip or flattening in the summer months.
+</div>
+
+<!-- interactive embed, adjust the width and height as necessary, copy lines 155 to 157 to create a new interactive embed --> 
+<div class='center_aligner'>
+	<iframe src="interactiveRC.html" frameBorder=0 scrolling=no></iframe>
+</div>
+
+
+<!-- counter -->
+<div class='header sticky step' id='dynamic_sticky1'>
+</div>
+
+
+<div class='leftside'>
+
+	<div class='text progressive'>
+	<h1>Which Borough Recycles Most Successfully?</h1>
+	You may be surprised by the answer: Staten Island.
+	</div>
+
+
+
+	<div class='text progressive'>
+	<h1>NYC Overall MGP Capture Average</h1>
+	Has increased gradually each year (from 61% to 65%, 2016&ndash;2019).
+	</div>
+
+
+
+
+
+
+		<div class='text progressive end'>
+	<h1>Room for Improvement </h1>
+	Paper capture lags that of MGP. The city average remained flat over the years 2016&ndash;2019 at 39%.
+	</div>
+
+</div>
+
+<div class='text'>
+	<h1>Takeaways</h1>
+	<b>Trends: </b> Small multiples show that months affect rates: Some boroughs dip down in July-Aug and others flatten over the summer months. MGP capture has shown a slow, steady increase over the period, while paper capture has remained flat.<br>
+	<b>Rankings (Four-Year Average, 2016&ndash;2019):</b> For MGP capture, the most successful borough was Staten Island (78%), followed by Queens (70%), Manhattan (62%), Brooklyn (56%), and the Bronx (54%). For paper capture, the most successful borough was again Staten Island (45%), followed by Manhattan (41%), Brooklyn (40%), Queens (39%), and the Bronx (32%). The Bronx was the worst in both categories but has shown the most improvement in MGP capture over the 4 years (7%).
+	<div class='center_aligner'>
+	<!-- change line 120 if you want to change the size of the image -->
+	<img class='small' src="images/tables.png"> 	
+</div>
+
+
+	<b>Impact:</b> To measure the impact of these capture rates, one needs to take into account the population of the various boroughs. Although Staten Island has the best recycling capture, its population is by far the smallest, therefore the impact is not as great.
+
+	<div class='center_aligner'>
+	<!-- change line 120 if you want to change the size of the image -->
+	<img class='small' src="images/NYC_Boromap.png"> 	
+</div>
+
+
+
+	
+</div>
+<div class='text'>
+<b>Questions for further investigation:</b><br>
+<ul style="list-style-type:square;">
+	<li>Why is it that Staten Island, a more politically conservative borough, surpassed the other boroughs in recycling? </li>
+			<li>Why is paper capture much lower than MGP capture in NYC? </li>
+			<li>What structural and personal behavioral changes can be made to improve capture rates in NYC? This <a href="https://www.nytimes.com/2020/01/29/nyregion/nyc-recycling.html">NY Times article</a> by Anne Barnard (1/29/20) states that NYC falls far behind other major cities such as Seattle and San Francisco in its overall recycling rate (Seattle and San Francisco recycle over half of their garbage, while NYC recycles about one fifth).</li>
+		</ul>
+
+	<br><br>
+	<b>Sources: </b><br>
+	1) NYC Recycling Program History: <a href="https://www.nrdc.org/experts/eric-goldstein/new-york-citys-history-making-recycling-law-turns-25-years-old-part-i">www.nrdc.org/experts/eric-goldstein/new-york-citys-history-making-recycling-law-turns-25-years-old-part-i</a><br>
+Data Source for all charts: City of New York via Kaggle <a href="https://www.kaggle.com/new-york-city/nyc-recycling-diversion-and-capture-rates">www.kaggle.com/new-york-city/nyc-recycling-diversion-and-capture-rates</a>
+	<br>
+	NYC population data: <a href="https://www.census.gov/quickfacts/fact/table/newyorkcitynewyork,bronxcountybronxboroughnewyork,kingscountybrooklynboroughnewyork,newyorkcountymanhattanboroughnewyork,queenscountyqueensboroughnewyork,richmondcountystatenislandboroughnewyork/PST045219>">census.gov</a><br>
+	
+
+</div>
+
+
+
+</div>
+
+</body>
+<script type="text/javascript">
+
+// instantiate the scrollama
+const scroller = scrollama();
+const scroller2 = scrollama();
+
+scroller
+  .setup({
+    step: ".text",
+    offset: 0.9,
+  })
+  .onStepEnter(response => {
+    // { element, index, direction }
+    el=response.element;
+    el.style.opacity=1;
+    el.style.marginTop='5%';    
+  })
+  .onStepExit(response => {
+    // { element, index, direction }  
+    el=response.element;
+  })
+  ;
+ // setup resize event
+window.addEventListener("resize", scroller.resize);
+
+scroller2
+  .setup({
+    step: ".progressive",
+    offset: 0.6,
+  })
+  .onStepEnter(response => {
+    // { element, index, direction }
+    el=response.element;
+    el.style.opacity=1;
+    if(response.index==0 || 1 || 2){
+    	stick('dynamic_sticky1')
+    	response.direction=='down'
+    	if(response.index==0){
+    		count(1,78,1,'Staten Island','Borough with the highest average MGP capture rate (2016&ndash;2019)','dynamic_sticky1')
+    	} else if (response.index==1){
+    		count(1,3,.5,'Bronx','Borough with the greatest improvement in MGP capture in 2019','dynamic_sticky1')
+    	} else if (response.index==2){
+    		count(0,39,1,'NYC Paper Capture','Has remained flat (2016&ndash;2019)','dynamic_sticky1')
+    	}
+    }
+  })
+  .onStepExit(response => {
+    // { element, index, direction }  
+    el=response.element;
+    console.log(response.index)
+    if(response.index==2){
+    	unstick('dynamic_sticky1')
+    }
+    el.style.opacity=0;
+  })
+  ;
+ // setup resize event
+window.addEventListener("resize", scroller2.resize);
+
+function count(number1, number2, step, title, label, location_id, prefix='', suffix='%'){
+	target = document.querySelector('#'+location_id)
+	console.log(target)
+	let text=number1;
+
+	setInterval(function(){
+		if(text!=number2){
+			num = text+step
+			if(num % 1 == 0){
+				text = num
+			} else {
+				text = parseFloat(num.toFixed(2))
+			}
+			target.innerHTML="<div class='aligner'><h1>"+title+"</h1><div id='counter'>"+prefix+text+suffix+"</div><h2>"+label+"</h2></div>"
+		}
+	}, 30);
+}
+
+function stick(location_id){
+	target = document.querySelector('#'+location_id)
+	target.style.position="sticky"
+}
+
+function unstick(location_id){
+	target = document.querySelector('#'+location_id)
+	target.style.position="relative"
+}
+
+
+
+
+
+
+
+</script>
+
+<div class='text'>
+	<h1>text2</h1>
+	text2
+</div>
+
+
+</html>
